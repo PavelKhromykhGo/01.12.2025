@@ -12,7 +12,7 @@ type LinkCheck struct {
 	Status string `json:"status"`
 }
 
-type ListGroup struct {
+type LinksGroup struct {
 	ID    int         `json:"id"`
 	Links []LinkCheck `json:"links"`
 }
