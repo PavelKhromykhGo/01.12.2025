@@ -8,10 +8,6 @@ import (
 	"time"
 )
 
-type Checker interface {
-	Check(ctx context.Context, url string) models.LinkStatus
-}
-
 type HTTPChecker struct {
 	client *http.Client
 }
