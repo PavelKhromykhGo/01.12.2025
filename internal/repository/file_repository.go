@@ -8,12 +8,6 @@ import (
 	"os"
 )
 
-type Repository interface {
-	GetID(ctx context.Context) (int, error)
-	SaveGroup(ctx context.Context, group models.LinksGroup) error
-	GetGroups(ctx context.Context, id []int) ([]models.LinksGroup, error)
-}
-
 type FileData struct {
 	ID     int                 `json:"id"`
 	Groups []models.LinksGroup `json:"groups"`
