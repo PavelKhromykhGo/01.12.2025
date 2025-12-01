@@ -39,7 +39,7 @@ HTTP-сервис на Go для проверки доступности инт�
 Клонировать:
 ```bash
 git clone https://github.com/PavelKhromykhGo/01.12.2025
-cd linkchecker
+cd 01.12.2025
 ```
 Установить зависимости:
 ```bash
@@ -55,6 +55,7 @@ http://localhost:8080
 ```
 
 # API
+Проверка через `Postman`
 ## POST /links/check
 ### Request:
 ```bash
