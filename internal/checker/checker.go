@@ -12,12 +12,14 @@ type HTTPChecker struct {
 	client *http.Client
 }
 
+// NewHTTPChecker создаёт cheker с заданным тайм‑аутом на запросы.
 func NewHTTPChecker(timeout time.Duration) *HTTPChecker {
 	return &HTTPChecker{client: &http.Client{
 		Timeout: timeout,
 	}}
 }
 
+// Check выполняет GET запрос к указанному URL и возвращает статус его доступности.
 func (c *HTTPChecker) Check(ctx context.Context, url string) models.LinkStatus {
 	url = normalizeURL(url)
 
@@ -38,6 +40,7 @@ func (c *HTTPChecker) Check(ctx context.Context, url string) models.LinkStatus {
 	return models.StatusNotAvailable
 }
 
+// normalizeURL гарантирует наличие схемы в URL, если клиент его не передал.
 func normalizeURL(url string) string {
 	if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
 		return url

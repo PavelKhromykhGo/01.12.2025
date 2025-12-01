@@ -8,12 +8,15 @@ import (
 	"github.com/jung-kurt/gofpdf"
 )
 
+// PDFGenerator формирует PDF‑отчёты с информацией о доступности ссылок.
+// Пустая структура нам нужна для имплементации интерфейса PDFGenerator в handler.go
 type PDFGenerator struct{}
 
 func NewPDFGenerator() *PDFGenerator {
 	return &PDFGenerator{}
 }
 
+// Generate строит табличный PDF‑отчёт по переданным группам ссылок.
 func (g *PDFGenerator) Generate(groups []models.LinksGroup) ([]byte, error) {
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()

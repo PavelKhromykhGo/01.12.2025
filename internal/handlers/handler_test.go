@@ -10,24 +10,29 @@ import (
 	"testing"
 )
 
+// fakeService эмулирует сервисный слой для изолированного тестирования обработчиков.
 type fakeService struct {
 	group models.LinksGroup
 }
 
+// CheckLinks возвращает предопределённую группу ссылок без фактической проверки.
 func (s *fakeService) CheckLinks(ctx context.Context, urls []string) (models.LinksGroup, error) {
 	return s.group, nil
 }
 
+// GetGroups не используется в тестах, нужен для имплементации интерфейса
 func (s *fakeService) GetGroups(ctx context.Context, ids []int) ([]models.LinksGroup, error) {
 	return nil, nil
 }
 
 type fakePDF struct{}
 
+// Generate возвращает статичное содержимое PDF для проверки ответа обработчика.
 func (f *fakePDF) Generate(group []models.LinksGroup) ([]byte, error) {
 	return []byte("One, two"), nil
 }
 
+// TestCheckLinksHandler проверяет корректность ответа обработчика.
 func TestCheckLinksHandler(t *testing.T) {
 	wantGroup := models.LinksGroup{
 		ID: 1,

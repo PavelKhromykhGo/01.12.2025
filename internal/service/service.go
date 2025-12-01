@@ -5,30 +5,37 @@ import (
 	"context"
 )
 
+// Repo определяет поведение, необходимое от репозитория
 type Repo interface {
 	GetID(ctx context.Context) (int, error)
 	SaveGroup(ctx context.Context, group models.LinksGroup) error
 	GetGroups(ctx context.Context, ids []int) ([]models.LinksGroup, error)
 }
 
+// Service interface в данном случае необходим только для тестов, чтобы Handler мог принимать
+// интерфейс, что дает возможность создавать fake service
 type Service interface {
 	CheckLinks(ctx context.Context, urls []string) (models.LinksGroup, error)
 	GetGroups(ctx context.Context, ids []int) ([]models.LinksGroup, error)
 }
 
+// Checker поведение, необходимое сервису от чекера
 type Checker interface {
 	Check(ctx context.Context, url string) models.LinkStatus
 }
 
+// LinkService координирует проверку ссылок и их сохранение через репозиторий и чекер.
 type LinkService struct {
 	repo    Repo
 	checker Checker
 }
 
+// NewLinkService создаёт LinkService с зависимостями репозитория и чекера.
 func NewLinkService(repo Repo, checker Checker) *LinkService {
 	return &LinkService{repo: repo, checker: checker}
 }
 
+// CheckLinks проверяет каждый переданный URL, сохраняет результаты и возвращает созданную группу с единым ID.
 func (s *LinkService) CheckLinks(ctx context.Context, urls []string) (models.LinksGroup, error) {
 	id, err := s.repo.GetID(ctx)
 	if err != nil {
@@ -52,6 +59,7 @@ func (s *LinkService) CheckLinks(ctx context.Context, urls []string) (models.Lin
 	return group, nil
 }
 
+// GetGroups получает группы ссылок по ID из репозитория.
 func (s *LinkService) GetGroups(ctx context.Context, ids []int) ([]models.LinksGroup, error) {
 	return s.repo.GetGroups(ctx, ids)
 }

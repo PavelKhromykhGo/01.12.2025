@@ -7,11 +7,13 @@ import (
 	"testing"
 )
 
+// fakeRepo имитирует репозиторий с инкрементируемыми ID.
 type fakeRepo struct {
 	id     int
 	groups map[int]models.LinksGroup
 }
 
+// newFakeRepo создаёт репозиторий с начальным ID для тестов.
 func newFakeRepo(startID int) *fakeRepo {
 	return &fakeRepo{
 		id:     startID,
@@ -19,17 +21,20 @@ func newFakeRepo(startID int) *fakeRepo {
 	}
 }
 
+// GetID возвращает идентификатор группы и увеличивает счётчик.
 func (r *fakeRepo) GetID(ctx context.Context) (int, error) {
 	id := r.id
 	r.id++
 	return id, nil
 }
 
+// SaveGroup сохраняет группу ссылок в память.
 func (r *fakeRepo) SaveGroup(ctx context.Context, group models.LinksGroup) error {
 	r.groups[group.ID] = group
 	return nil
 }
 
+// GetGroups возвращает сохранённые группы по переданным идентификаторам.
 func (r *fakeRepo) GetGroups(ctx context.Context, ids []int) ([]models.LinksGroup, error) {
 	var res []models.LinksGroup
 	for _, id := range ids {
@@ -40,10 +45,12 @@ func (r *fakeRepo) GetGroups(ctx context.Context, ids []int) ([]models.LinksGrou
 	return res, nil
 }
 
+// fakeChecker выдаёт заранее определённые статусы ссылок.
 type fakeChecker struct {
 	statuses map[string]models.LinkStatus
 }
 
+// Check возвращает статус ссылки.
 func (c *fakeChecker) Check(ctx context.Context, url string) models.LinkStatus {
 	if status, ok := c.statuses[url]; ok {
 		return status
@@ -52,6 +59,7 @@ func (c *fakeChecker) Check(ctx context.Context, url string) models.LinkStatus {
 	return models.StatusNotAvailable
 }
 
+// TestLinksServiceCheckLinks проверяет создание группы и сохранение статусов ссылок.
 func TestLinksServiceCheckLinks(t *testing.T) {
 	ctx := context.Background()
 
@@ -102,6 +110,7 @@ func TestLinksServiceCheckLinks(t *testing.T) {
 	}
 }
 
+// TestLinksServiceGetGroups проверяет, что сервис возвращает сохранённые группы по ID.
 func TestLinksServiceGetGroups(t *testing.T) {
 	ctx := context.Background()
 

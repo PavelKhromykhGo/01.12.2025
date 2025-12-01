@@ -10,6 +10,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
+// PDFGenerator формирует PDF‑отчёт из групп ссылок.
 type PDFGenerator interface {
 	Generate(links []models.LinksGroup) ([]byte, error)
 }
@@ -19,10 +20,12 @@ type Handler struct {
 	pdfGen PDFGenerator
 }
 
+// NewHandler создаёт экземпляр Handler c переданными зависимостями сервиса и генератора PDF.
 func NewHandler(s service.Service, p PDFGenerator) *Handler {
 	return &Handler{svc: s, pdfGen: p}
 }
 
+// Route настраивает и возвращает HTTP‑роутер со всеми публичными эндпоинтами.
 func (h *Handler) Route() http.Handler {
 	r := chi.NewRouter()
 
@@ -44,6 +47,7 @@ type checkLinksResponse struct {
 	LinksNum int               `json:"links_num"`
 }
 
+// CheckLinks принимает список URL, проверяет их через сервис и возвращает статусы.
 func (h *Handler) CheckLinks(w http.ResponseWriter, r *http.Request) {
 	var req checkLinksRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -78,6 +82,7 @@ type ReportRequest struct {
 	LinksList []int `json:"links_list"`
 }
 
+// Report генерирует PDF‑отчёт по указанным группам ссылок и отдаёт его клиенту.
 func (h *Handler) Report(w http.ResponseWriter, r *http.Request) {
 	var req ReportRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {

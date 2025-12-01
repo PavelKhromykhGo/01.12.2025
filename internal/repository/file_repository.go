@@ -8,6 +8,7 @@ import (
 	"os"
 )
 
+// FileData описывает сериализованное содержимое, сохраняемое на диск.
 type FileData struct {
 	ID     int                 `json:"id"`
 	Groups []models.LinksGroup `json:"groups"`
@@ -18,6 +19,7 @@ type FileRepo struct {
 	data FileData
 }
 
+// NewFileRepo инициализирует FileRepo, использующий указанный путь к JSON‑файлу.
 func NewFileRepo(path string) (*FileRepo, error) {
 	r := &FileRepo{
 		path: path,
@@ -35,17 +37,20 @@ func NewFileRepo(path string) (*FileRepo, error) {
 	return r, nil
 }
 
+// GetID возвращает СЛЕДУЮЩИЙ последовательный ID для группы ссылок и сохраняет его.
 func (r *FileRepo) GetID(ctx context.Context) (int, error) {
 	id := r.data.ID
 	r.data.ID++
 	return id, r.save()
 }
 
+// SaveGroup добавляет группу ссылок в репозиторий и записывает данные на диск.
 func (r *FileRepo) SaveGroup(ctx context.Context, group models.LinksGroup) error {
 	r.data.Groups = append(r.data.Groups, group)
 	return r.save()
 }
 
+// GetGroups возвращает сохранённые группы ссылок по указанным ID.
 func (r *FileRepo) GetGroups(ctx context.Context, ids []int) ([]models.LinksGroup, error) {
 	var res []models.LinksGroup
 
@@ -60,6 +65,7 @@ func (r *FileRepo) GetGroups(ctx context.Context, ids []int) ([]models.LinksGrou
 	return res, nil
 }
 
+// save сериализует данные репозитория и записывает их в файл.
 func (r *FileRepo) save() error {
 	data, err := json.MarshalIndent(r.data, "", "  ")
 	if err != nil {
@@ -68,6 +74,7 @@ func (r *FileRepo) save() error {
 	return os.WriteFile(r.path, data, 0644)
 }
 
+// load читает данные репозитория с диска, если файл существует.
 func (r *FileRepo) load() error {
 	data, err := os.ReadFile(r.path)
 	if err != nil {

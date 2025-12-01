@@ -1,3 +1,6 @@
+// Package main запускает HTTP-сервер, предоставляющий API для проверки доступности
+// интернет-ссылок и генерации PDF-отчётов.
+
 package main
 
 import (
@@ -16,6 +19,8 @@ import (
 	"time"
 )
 
+// main настраивает зависимости сервиса, запускает HTTP-сервер
+// и корректно завершает его работу по сигналу завершения.
 func main() {
 	repo, err := repository.NewFileRepo("links.json")
 	if err != nil {
